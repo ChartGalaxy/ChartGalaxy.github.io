@@ -86,7 +86,7 @@ let detailController;
 const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 function renderGallery() {
   const matches = galleryItems;
-  galleryPlane.innerHTML = matches.map(item => `<button class="example-card" data-example-id="${item.id}" aria-label="查看 ${escapeHTML(item.title)} 的图表与配套数据"><span class="example-image"><img src="${item.image}" alt="${escapeHTML(item.title)} · ${escapeHTML(item.chartType)}" loading="lazy" decoding="async" width="500" height="600" /><span class="example-caption"><span class="example-type">${escapeHTML(item.chartType)} · #${String(item.id).padStart(2, '0')}</span><strong>${escapeHTML(item.title)}</strong><span class="example-meta">${item.rowCount} 条数据 · ${item.columnCount} 个字段</span><span class="example-open">${icon('zoom')}查看详情</span></span></span></button>`).join('');
+  galleryPlane.innerHTML = matches.map(item => `<button class="example-card" data-example-id="${item.id}" aria-label="查看 ${escapeHTML(item.title)} 的图表与配套数据"><span class="example-image"><img src="${item.thumbnail}" alt="${escapeHTML(item.title)} · ${escapeHTML(item.chartType)}" loading="lazy" decoding="async" width="${item.thumbnailWidth}" height="${item.thumbnailHeight}" /><span class="example-caption"><span class="example-type">${escapeHTML(item.chartType)} · #${String(item.id).padStart(2, '0')}</span><strong>${escapeHTML(item.title)}</strong><span class="example-meta">${item.rowCount} 条数据 · ${item.columnCount} 个字段</span><span class="example-open">${icon('zoom')}查看详情</span></span></span></button>`).join('');
   layoutGallery();
 }
 
