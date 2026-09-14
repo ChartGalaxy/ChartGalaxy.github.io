@@ -1,0 +1,33 @@
+{
+  "source": "https://huggingface.co/datasets/ChartGalaxy/ChartGalaxy/resolve/main/examples.png",
+  "image": "images/examples.png",
+  "width": 1590,
+  "height": 2070,
+  "presentation": "Unmodified original PNG, selected regions displayed with SVG viewBox",
+  "samples": [
+    {
+      "title": "葡萄酒出口",
+      "viewBox": "29 25 446 445"
+    },
+    {
+      "title": "新能源汽车",
+      "viewBox": "1086 25 448 445"
+    },
+    {
+      "title": "医疗投入",
+      "viewBox": "29 510 424 490"
+    },
+    {
+      "title": "淡水储量",
+      "viewBox": "1110 510 424 490"
+    },
+    {
+      "title": "艺术教育",
+      "viewBox": "29 1040 401 491"
+    },
+    {
+      "title": "食物浪费",
+      "viewBox": "36 1581 465 464"
+    }
+  ]
+}
