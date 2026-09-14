@@ -29,7 +29,7 @@ const observer = new IntersectionObserver(entries => { for (const entry of entri
 ['overview', 'updates', 'datasets', 'explore', 'research'].forEach(id => observer.observe(document.getElementById(id)));
 
 let snapshot;
-let period = 'downloadsAllTime';
+const period = 'downloadsAllTime';
 const format = value => new Intl.NumberFormat('en-US').format(value);
 const repoNames = ['ChartGalaxy', 'DAD', 'InfoDet', 'InfoChartQA'];
 const colors = ['#517848', '#c4aa66', '#799abb', '#ae94b5'];
@@ -38,18 +38,13 @@ function renderStats() {
   const total = totalDownloads(snapshot, period);
   const maximum = Math.max(...snapshot.repositories.map(r => r[period]), 1);
   document.querySelector('#download-total').innerHTML = `${format(total)}<span>次</span>`;
-  document.querySelector('#total-label').textContent = `4 个仓库 · ${period === 'downloadsAllTime' ? '历史累计下载' : '近 30 天下载'}`;
+  document.querySelector('#total-label').textContent = '4 个仓库 · 历史累计下载';
   document.querySelector('#download-rows').innerHTML = repositoryIds.map((id, i) => {
     const row = snapshot.repositories.find(r => r.id === id);
     return `<div class="download-row" style="--bar-color:${colors[i]}"><div class="download-row-heading"><a href="https://huggingface.co/datasets/${id}" target="_blank" rel="noopener noreferrer"><span class="repo-dot"></span>${repoNames[i]}</a><strong>${format(row[period])}</strong></div><div class="download-bar" aria-hidden="true"><span style="width:${row[period] / maximum * 100}%"></span></div></div>`;
   }).join('');
   document.querySelector('#stats-date').textContent = `快照 · ${new Date(snapshot.fetchedAt).toISOString().slice(0, 16).replace('T', ' ')} UTC`;
 }
-document.querySelectorAll('[data-period]').forEach(button => button.addEventListener('click', () => {
-  period = button.dataset.period;
-  document.querySelectorAll('[data-period]').forEach(b => { b.classList.toggle('active', b === button); b.setAttribute('aria-pressed', String(b === button)); });
-  renderStats();
-}));
 try {
   const response = await fetch('./data/downloads.json');
   if (!response.ok) throw new Error('Snapshot unavailable');
