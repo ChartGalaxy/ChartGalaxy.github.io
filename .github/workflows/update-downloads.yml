@@ -1,0 +1,53 @@
+name: Update download statistics
+
+on:
+  schedule:
+    # 01:17 UTC = 09:17 Asia/Shanghai, every day.
+    - cron: '17 1 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-downloads.yml'
+      - 'scripts/refresh-stats.mjs'
+      - 'stats.js'
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: update-download-statistics
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out the latest main branch
+        uses: actions/checkout@v6
+        with:
+          ref: main
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Fetch and validate all four datasets
+        run: node scripts/refresh-stats.mjs data/downloads.json
+      - name: Commit the complete snapshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- data/downloads.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'chore: refresh dataset download statistics'
+            git push origin HEAD:main
+          fi
+      # GITHUB_TOKEN pushes do not trigger the usual Pages build, so request it explicitly.
+      - name: Rebuild the published GitHub Pages site
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"
