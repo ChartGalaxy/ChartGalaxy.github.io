@@ -2,8 +2,8 @@ name: Update download statistics
 
 on:
   schedule:
-    # 00:30 and 11:30 UTC = 08:30 and 19:30 Asia/Shanghai, every day.
-    - cron: '30 0,11 * * *'
+    # 23:00 and 11:00 UTC = 07:00 and 19:00 Asia/Shanghai, every day.
+    - cron: '0 11,23 * * *'
   workflow_dispatch:
   push:
     branches: [main]

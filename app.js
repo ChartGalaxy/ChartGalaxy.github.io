@@ -31,6 +31,11 @@ const observer = new IntersectionObserver(entries => { for (const entry of entri
 let snapshot;
 const period = 'downloadsAllTime';
 const format = value => new Intl.NumberFormat('en-US').format(value);
+const snapshotDateFormat = new Intl.DateTimeFormat('zh-CN', {
+  timeZone: 'Asia/Shanghai',
+  year: 'numeric', month: '2-digit', day: '2-digit',
+  hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+});
 const repoNames = ['ChartGalaxy', 'DAD', 'InfoDet', 'InfoChartQA'];
 const colors = ['#517848', '#c4aa66', '#799abb', '#ae94b5'];
 function renderStats() {
@@ -43,7 +48,7 @@ function renderStats() {
     const row = snapshot.repositories.find(r => r.id === id);
     return `<div class="download-row" style="--bar-color:${colors[i]}"><div class="download-row-heading"><a href="https://huggingface.co/datasets/${id}" target="_blank" rel="noopener noreferrer"><span class="repo-dot"></span>${repoNames[i]}</a><strong>${format(row[period])}</strong></div><div class="download-bar" aria-hidden="true"><span style="width:${row[period] / maximum * 100}%"></span></div></div>`;
   }).join('');
-  document.querySelector('#stats-date').textContent = `快照 · ${new Date(snapshot.fetchedAt).toISOString().slice(0, 16).replace('T', ' ')} UTC`;
+  document.querySelector('#stats-date').textContent = `快照 · ${snapshotDateFormat.format(new Date(snapshot.fetchedAt))} 北京时间（UTC+8）`;
 }
 try {
   const response = await fetch('./data/downloads.json');
