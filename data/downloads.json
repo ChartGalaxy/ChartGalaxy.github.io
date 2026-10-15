@@ -1,26 +1,26 @@
 {
-  "fetchedAt": "2026-10-15T01:07:37.876Z",
+  "fetchedAt": "2026-10-15T15:25:04.354Z",
   "source": "Hugging Face public API",
   "repositories": [
     {
       "id": "ChartGalaxy/ChartGalaxy",
-      "downloads": 25275,
-      "downloadsAllTime": 219060
+      "downloads": 25399,
+      "downloadsAllTime": 220200
     },
     {
       "id": "dad887/DAD",
-      "downloads": 20914,
-      "downloadsAllTime": 37150
+      "downloads": 21158,
+      "downloadsAllTime": 37945
     },
     {
       "id": "InfoDet/InfoDet",
-      "downloads": 4357,
-      "downloadsAllTime": 16607
+      "downloads": 4320,
+      "downloadsAllTime": 16725
     },
     {
       "id": "Jietson/InfoChartQA",
-      "downloads": 3077,
-      "downloadsAllTime": 13829
+      "downloads": 3067,
+      "downloadsAllTime": 13907
     }
   ]
 }
