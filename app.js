@@ -1,4 +1,5 @@
 import { repositoryIds, validateSnapshot, totalDownloads } from './stats.js';
+import { initI18n, onLangChange, t, getLang, localized } from './i18n.js';
 const paths = {
   arrow: '<path d="M4 12h15m-5-5 5 5-5 5"/>',
   external: '<path d="M14 4h6v6m0-6L10 14M10 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/>',
@@ -20,47 +21,57 @@ const paths = {
 const icon = name => `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${paths[name] || paths.arrow}</svg>`;
 function hydrateIcons(root = document) { root.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = icon(el.dataset.icon); }); }
 hydrateIcons();
+initI18n(hydrateIcons);
 const menu = document.querySelector('.menu-button');
 const nav = document.querySelector('#navigation');
-menu.addEventListener('click', () => { const open = nav.classList.toggle('open'); menu.setAttribute('aria-expanded', String(open)); menu.setAttribute('aria-label', open ? '关闭导航' : '打开导航'); });
-nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('open'); menu.setAttribute('aria-expanded', 'false'); menu.setAttribute('aria-label', '打开导航'); }));
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { nav.classList.remove('open'); menu.setAttribute('aria-expanded', 'false'); } });
+menu.addEventListener('click', () => { const open = nav.classList.toggle('open'); menu.setAttribute('aria-expanded', String(open)); menu.setAttribute('aria-label', open ? t('menuClose') : t('menuOpen')); });
+nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('open'); menu.setAttribute('aria-expanded', 'false'); menu.setAttribute('aria-label', t('menuOpen')); }));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { nav.classList.remove('open'); menu.setAttribute('aria-expanded', 'false'); menu.setAttribute('aria-label', t('menuOpen')); } });
+const syncMenuLabel = () => menu.setAttribute('aria-label', nav.classList.contains('open') ? t('menuClose') : t('menuOpen'));
+syncMenuLabel();
+onLangChange(syncMenuLabel);
 const observer = new IntersectionObserver(entries => { for (const entry of entries) if (entry.isIntersecting) nav.querySelectorAll('a').forEach(a => a.classList.toggle('active', a.hash === '#' + entry.target.id)); }, { rootMargin: '-15% 0px -60% 0px' });
 ['overview', 'updates', 'datasets', 'explore', 'research'].forEach(id => observer.observe(document.getElementById(id)));
 
 let snapshot;
+// Current download-status message, re-rendered in the active language on every switch.
+let statsState = 'default';
+const statsStatus = document.querySelector('#stats-status');
+const renderStatsStatus = () => { statsStatus.textContent = t({ default: 'statsDefault', unavailable: 'statsUnavailable', querying: 'statsQuerying', synced: 'statsSynced', failKept: 'statsFailKept', fail: 'statsFail' }[statsState]); };
+const setStatsState = state => { statsState = state; renderStatsStatus(); };
+renderStatsStatus();
 const period = 'downloadsAllTime';
 const format = value => new Intl.NumberFormat('en-US').format(value);
-const snapshotDateFormat = new Intl.DateTimeFormat('zh-CN', {
+const snapshotDateFormat = lang => new Intl.DateTimeFormat(lang === 'en' ? 'en-US' : 'zh-CN', {
   timeZone: 'Asia/Shanghai',
-  year: 'numeric', month: '2-digit', day: '2-digit',
+  year: 'numeric', month: lang === 'en' ? 'short' : '2-digit', day: '2-digit',
   hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
 });
 const repoNames = ['ChartGalaxy', 'ChartGalaxy++', 'DAD', 'InfoDet', 'InfoChartQA'];
 const colors = ['#517848', '#3c8c78', '#c4aa66', '#799abb', '#ae94b5'];
 function renderStats() {
-  if (!snapshot) return;
+  if (!snapshot) { if (statsState === 'unavailable') document.querySelector('#stats-date').textContent = t('snapshotUnavailable'); return; }
   const total = totalDownloads(snapshot, period);
   const maximum = Math.max(...snapshot.repositories.map(r => r[period]), 1);
-  document.querySelector('#download-total').innerHTML = `${format(total)}<span>次</span>`;
-  document.querySelector('#total-label').textContent = '5 个仓库 · 历史累计下载';
+  document.querySelector('#download-total').innerHTML = `${format(total)}${t('downloadUnit')}`;
+  document.querySelector('#total-label').textContent = t('totalLabel');
   document.querySelector('#download-rows').innerHTML = repositoryIds.map((id, i) => {
     const row = snapshot.repositories.find(r => r.id === id);
     return `<div class="download-row" style="--bar-color:${colors[i]}"><div class="download-row-heading"><a href="https://huggingface.co/datasets/${id}" target="_blank" rel="noopener noreferrer"><span class="repo-dot"></span>${repoNames[i]}</a><strong>${format(row[period])}</strong></div><div class="download-bar" aria-hidden="true"><span style="width:${row[period] / maximum * 100}%"></span></div></div>`;
   }).join('');
-  document.querySelector('#stats-date').textContent = `快照 · ${snapshotDateFormat.format(new Date(snapshot.fetchedAt))} 北京时间（UTC+8）`;
+  document.querySelector('#stats-date').textContent = t('snapshot', snapshotDateFormat(getLang()).format(new Date(snapshot.fetchedAt)));
 }
+onLangChange(() => { renderStats(); renderStatsStatus(); });
 try {
   const response = await fetch('./data/downloads.json');
   if (!response.ok) throw new Error('Snapshot unavailable');
   snapshot = validateSnapshot(await response.json());
   renderStats();
-} catch { document.querySelector('#stats-status').textContent = '统计快照暂时无法读取。可点击刷新重试，或访问各数据集官方页面。'; }
+} catch { setStatsState('unavailable'); renderStats(); }
 document.querySelector('#refresh-stats').addEventListener('click', async event => {
   const button = event.currentTarget;
   button.disabled = true;
-  const status = document.querySelector('#stats-status');
-  status.textContent = '正在查询 5 个官方仓库的最新统计…';
+  setStatsState('querying');
   try {
     const repositories = await Promise.all(repositoryIds.map(async id => {
       const response = await fetch(`https://huggingface.co/api/datasets/${id}?expand[]=downloads&expand[]=downloadsAllTime`, { signal: AbortSignal.timeout(15000) });
@@ -70,8 +81,8 @@ document.querySelector('#refresh-stats').addEventListener('click', async event =
     }));
     snapshot = validateSnapshot({ fetchedAt: new Date().toISOString(), repositories });
     renderStats();
-    status.textContent = '已同步 5 个仓库。合计为仓库下载次数，不代表去重用户数。';
-  } catch { status.textContent = snapshot ? '暂时无法连接 Hugging Face，已保留上方标注时间的完整快照，请稍后重试。' : '暂时无法连接 Hugging Face，请稍后重试或访问官方仓库。'; }
+    setStatsState('synced');
+  } catch { setStatsState(snapshot ? 'failKept' : 'fail'); }
   finally { button.disabled = false; }
 });
 
@@ -86,9 +97,11 @@ let detailController;
 const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 function renderGallery() {
   const matches = galleryItems;
-  galleryPlane.innerHTML = matches.map(item => `<button class="example-card" data-example-id="${item.id}" aria-label="查看 ${escapeHTML(item.title)} 的图表与配套数据"><span class="example-image"><img src="${item.thumbnail}" alt="${escapeHTML(item.title)} · ${escapeHTML(item.chartType)}" loading="lazy" decoding="async" width="${item.thumbnailWidth}" height="${item.thumbnailHeight}" /><span class="example-caption"><span class="example-type">${escapeHTML(item.chartType)} · #${String(item.id).padStart(2, '0')}</span><strong>${escapeHTML(item.title)}</strong><span class="example-meta">${item.rowCount} 条数据 · ${item.columnCount} 个字段</span><span class="example-open">${icon('zoom')}查看详情</span></span></span></button>`).join('');
+  galleryPlane.innerHTML = matches.map(item => { const title = escapeHTML(localized(item, 'title')); const chartType = escapeHTML(localized(item, 'chartType')); return `<button class="example-card" data-example-id="${item.id}" aria-label="${escapeHTML(t('cardLabel', localized(item, 'title')))}"><span class="example-image"><img src="${item.thumbnail}" alt="${title} · ${chartType}" loading="lazy" decoding="async" width="${item.thumbnailWidth}" height="${item.thumbnailHeight}" /><span class="example-caption"><span class="example-type">${chartType} · #${String(item.id).padStart(2, '0')}</span><strong>${title}</strong><span class="example-meta">${t('rowsFields', item.rowCount, item.columnCount)}</span><span class="example-open">${icon('zoom')}${t('viewDetails')}</span></span></span></button>`; }).join('');
   layoutGallery();
 }
+
+onLangChange(() => { if (galleryItems.length) renderGallery(); });
 
 // Fit all 24 examples into the full-width gallery, keeping every edge tile accessible.
 function layoutGallery() {
@@ -153,14 +166,14 @@ async function openGalleryExample(id) {
   detailController = new AbortController();
   const image = document.querySelector('#gallery-detail-image');
   image.src = item.image;
-  image.alt = `${item.title}，ChartGalaxy 官方样例`;
-  document.querySelector('#gallery-title').textContent = item.title;
-  document.querySelector('#gallery-detail-label').textContent = `${item.chartType} · ${item.rowCount} 条数据 · ${item.columnCount} 个字段`;
+  image.alt = t('exampleAlt', localized(item, 'title'));
+  document.querySelector('#gallery-title').textContent = localized(item, 'title');
+  document.querySelector('#gallery-detail-label').textContent = `${localized(item, 'chartType')} · ${t('rowsFields', item.rowCount, item.columnCount)}`;
   document.querySelector('#gallery-image-source').href = item.imageSource;
   document.querySelector('#gallery-json').href = item.dataSource;
   const note = document.querySelector('#data-detail-note');
   const table = document.querySelector('#example-data-table');
-  note.textContent = '正在读取官方配套数据…';
+  note.textContent = t('dataLoading');
   table.replaceChildren();
   setDetailTab('image');
   const matches = galleryItems;
@@ -177,10 +190,10 @@ async function openGalleryExample(id) {
     const data = item.dataKey ? raw.chart_data?.[item.dataKey] : raw;
     if (!Array.isArray(data?.data) || !Array.isArray(data?.columns) || !data.columns.every(c => typeof c.name === 'string')) throw new Error('Unsupported data');
     const columns = data.columns;
-    table.innerHTML = `<caption>${escapeHTML(item.title)} · 配套数据</caption><thead><tr>${columns.map(c => `<th scope="col">${escapeHTML(c.name)}<small>${escapeHTML(c.type)}</small></th>`).join('')}</tr></thead><tbody>${data.data.map(row => `<tr>${columns.map(c => `<td>${row[c.name] == null ? '—' : escapeHTML(typeof row[c.name] === 'object' ? JSON.stringify(row[c.name]) : row[c.name])}</td>`).join('')}</tr>`).join('')}</tbody>`;
-    note.textContent = `${data.data.length} 条数据 · 保留官方字段与数值。${item.dataKey ? `本样例取自原始汇总文件中的 ${item.dataKey}。` : ''}${data.data.some(row => columns.some(c => row[c.name] == null)) ? '— 表示原文件中的空值。' : ''}`;
+    table.innerHTML = `<caption>${escapeHTML(t('dataCaption', localized(item, 'title')))}</caption><thead><tr>${columns.map(c => `<th scope="col">${escapeHTML(c.name)}<small>${escapeHTML(c.type)}</small></th>`).join('')}</tr></thead><tbody>${data.data.map(row => `<tr>${columns.map(c => `<td>${row[c.name] == null ? '—' : escapeHTML(typeof row[c.name] === 'object' ? JSON.stringify(row[c.name]) : row[c.name])}</td>`).join('')}</tr>`).join('')}</tbody>`;
+    note.textContent = t('dataNote', data.data.length, item.dataKey, data.data.some(row => columns.some(c => row[c.name] == null)));
   } catch (error) {
-    if (request === detailRequest && error.name !== 'AbortError') note.textContent = '配套数据暂时无法读取，请使用下方链接查看官方原始 JSON。';
+    if (request === detailRequest && error.name !== 'AbortError') note.textContent = t('dataFail');
   }
 }
 galleryGrid.addEventListener('click', event => {
@@ -204,22 +217,23 @@ try {
   renderGallery();
 } catch {
   galleryStatus.hidden = false;
-  galleryStatus.innerHTML = '样例暂时无法加载。<a href="https://github.com/ChartGalaxy/ChartGalaxy/tree/main/examples" target="_blank" rel="noopener noreferrer">查看官方图表示例 ↗</a>';
+  galleryStatus.innerHTML = t('galleryFail');
+  onLangChange(() => { galleryStatus.innerHTML = t('galleryFail'); });
 }
 
 const citations = await fetch('./data/citations.json').then(r => { if (!r.ok) throw new Error('Unavailable'); return r.json(); }).catch(() => null);
 document.querySelectorAll('[data-cite]').forEach(button => button.addEventListener('click', () => {
   if (!citations) { window.open(button.closest('.paper').querySelector('h4 a').href, '_blank', 'noopener'); return; }
   const key = button.dataset.cite;
-  document.querySelector('#citation-title').textContent = `${({ galaxy: 'ChartGalaxy', galaxypp: 'ChartGalaxy++', det: 'InfoDet', qa: 'InfoChartQA' })[key]} · BibTeX`;
+  document.querySelector('#citation-title').textContent = `${({ galaxy: 'ChartGalaxy', galaxypp: 'ChartGalaxy++', dad: 'DAD', det: 'InfoDet', qa: 'InfoChartQA' })[key]} · BibTeX`;
   document.querySelector('#citation-text').textContent = citations[key];
   document.querySelector('#copy-status').textContent = '';
   document.querySelector('#citation-dialog').showModal();
 }));
 document.querySelector('#copy-citation').addEventListener('click', async () => {
   const code = document.querySelector('#citation-text');
-  try { await navigator.clipboard.writeText(code.textContent); document.querySelector('#copy-status').textContent = '已复制，可粘贴到论文引用文件。'; }
-  catch { const range = document.createRange(); range.selectNodeContents(code); const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range); document.querySelector('#copy-status').textContent = '已选中引用，请按 Ctrl+C（Mac 为 ⌘C）复制。'; }
+  try { await navigator.clipboard.writeText(code.textContent); document.querySelector('#copy-status').textContent = t('copied'); }
+  catch { const range = document.createRange(); range.selectNodeContents(code); const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range); document.querySelector('#copy-status').textContent = t('selectToCopy'); }
 });
 document.querySelectorAll('dialog').forEach(dialog => {
   dialog.querySelector('.dialog-close').addEventListener('click', () => dialog.close());

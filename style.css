@@ -202,3 +202,10 @@
   #explore .example-caption > strong { font-size: 10px; }
   #explore .example-open { font-size: 8px; padding: 4px 5px; }
 }
+.lang-toggle{font-size:12px;font-weight:500;color:var(--green);border:1px solid #d6dfd3;padding:8px 11px;border-radius:6px;white-space:nowrap;min-width:44px}.lang-toggle:hover{background:#edf3e9}.i18n-pending body{visibility:hidden}
+@media(max-width:640px){.lang-toggle{margin-left:auto;font-size:10px;padding:7px 9px;min-width:0}.lang-toggle+.header-link{margin-left:0}}
+p,.resource-description,.resource-description>span,.news-item h3,.section-note{text-wrap:pretty}h1,h2,h3,h4{text-wrap:balance}
+@media(max-width:760px){.menu-button{display:flex;padding:5px}.header-inner nav{display:none;position:absolute;left:0;top:74px;width:100%;height:auto;background:#fcfdf9;border-bottom:1px solid #e0e6d8;padding:10px 16px;box-shadow:0 8px 18px #24392012;gap:0;flex-direction:column;align-items:stretch}.header-inner nav.open{display:flex}.header-inner nav a{padding:12px;font-size:12px}.header-inner nav .active:after{width:3px;height:16px;left:0;top:12px;transform:none}.lang-toggle{margin-left:auto}.lang-toggle+.header-link{margin-left:0}}
+@media(max-width:640px){.header-inner nav{top:64px}}
+.metrics p,.news-item p,.group-heading h3,.group-heading p{text-wrap:balance}
+@media(min-width:641px) and (max-width:1100px){html[lang=en] .series-group{grid-template-columns:186px 1fr}html[lang=en] .group-heading{padding-inline:15px}}

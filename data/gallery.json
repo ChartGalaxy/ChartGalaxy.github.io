@@ -4,7 +4,9 @@
     {
       "id": 1,
       "title": "苹果业务营收构成",
+      "titleEn": "Apple revenue by segment",
       "chartType": "象形柱状图",
+      "chartTypeEn": "Pictorial column chart",
       "category": "comparison",
       "image": "./images/gallery/1.png",
       "dataFile": "./data/examples/1.json",
@@ -20,7 +22,9 @@
     {
       "id": 2,
       "title": "各国咖啡消费量",
+      "titleEn": "Coffee consumption by country",
       "chartType": "象形柱状图",
+      "chartTypeEn": "Pictorial column chart",
       "category": "comparison",
       "image": "./images/gallery/2.png",
       "dataFile": "./data/examples/2.json",
@@ -36,7 +40,9 @@
     {
       "id": 7,
       "title": "运输方式与排放占比",
+      "titleEn": "Emissions share by transport mode",
       "chartType": "环形图",
+      "chartTypeEn": "Donut chart",
       "category": "composition",
       "image": "./images/gallery/7.png",
       "dataFile": "./data/examples/7.json",
@@ -52,7 +58,9 @@
     {
       "id": 8,
       "title": "航天产业营收趋势",
+      "titleEn": "Space industry revenue trend",
       "chartType": "面积图",
+      "chartTypeEn": "Area chart",
       "category": "trend",
       "image": "./images/gallery/8.png",
       "dataFile": "./data/examples/8.json",
@@ -68,7 +76,9 @@
     {
       "id": 6,
       "title": "社交平台投资回报",
+      "titleEn": "Return on investment by social platform",
       "chartType": "分组条形图",
+      "chartTypeEn": "Grouped bar chart",
       "category": "comparison",
       "image": "./images/gallery/6.png",
       "dataFile": "./data/examples/6.json",
@@ -84,7 +94,9 @@
     {
       "id": 14,
       "title": "旅行预订的选择因素",
+      "titleEn": "Factors in choosing travel bookings",
       "chartType": "矩形树图",
+      "chartTypeEn": "Treemap",
       "category": "composition",
       "image": "./images/gallery/14.png",
       "dataFile": "./data/examples/14.json",
@@ -100,7 +112,9 @@
     {
       "id": 23,
       "title": "亚洲垂直农业发展",
+      "titleEn": "Vertical farming in Asia",
       "chartType": "堆叠柱状图",
+      "chartTypeEn": "Stacked column chart",
       "category": "trend",
       "image": "./images/gallery/23.png",
       "dataFile": "./data/examples/23.json",
@@ -116,7 +130,9 @@
     {
       "id": 24,
       "title": "珠宝材质与价格",
+      "titleEn": "Jewelry materials and prices",
       "chartType": "分组条形图",
+      "chartTypeEn": "Grouped bar chart",
       "category": "comparison",
       "image": "./images/gallery/24.png",
       "dataFile": "./data/examples/24.json",
@@ -132,7 +148,9 @@
     {
       "id": 3,
       "title": "年龄与播客偏好",
+      "titleEn": "Podcast preferences by age",
       "chartType": "小多图 · 饼图",
+      "chartTypeEn": "Small multiples · Pie chart",
       "category": "composition",
       "image": "./images/gallery/3.png",
       "dataFile": "./data/examples/3.json",
@@ -148,7 +166,9 @@
     {
       "id": 4,
       "title": "生态资源消耗对比",
+      "titleEn": "Ecological resource consumption compared",
       "chartType": "象形条形图",
+      "chartTypeEn": "Pictorial bar chart",
       "category": "comparison",
       "image": "./images/gallery/4.png",
       "dataFile": "./data/examples/4.json",
@@ -164,7 +184,9 @@
     {
       "id": 5,
       "title": "活动票价的日内变化",
+      "titleEn": "Intraday event ticket prices",
       "chartType": "哑铃图",
+      "chartTypeEn": "Dumbbell chart",
       "category": "trend",
       "image": "./images/gallery/5.png",
       "dataFile": "./data/examples/5.json",
@@ -180,7 +202,9 @@
     {
       "id": 9,
       "title": "欧洲城市旅行成本",
+      "titleEn": "Travel costs in European cities",
       "chartType": "双指标条形图",
+      "chartTypeEn": "Dual-measure bar chart",
       "category": "comparison",
       "image": "./images/gallery/9.png",
       "dataFile": "./data/examples/9.json",
@@ -196,7 +220,9 @@
     {
       "id": 10,
       "title": "出口额的年度变化",
+      "titleEn": "Annual change in export value",
       "chartType": "象形点阵图",
+      "chartTypeEn": "Pictorial dot matrix",
       "category": "trend",
       "image": "./images/gallery/10.png",
       "dataFile": "./data/examples/10.json",
@@ -212,7 +238,9 @@
     {
       "id": 11,
       "title": "火箭发动机推重比",
+      "titleEn": "Rocket engine thrust-to-weight ratios",
       "chartType": "折线图",
+      "chartTypeEn": "Line chart",
       "category": "trend",
       "image": "./images/gallery/11.png",
       "dataFile": "./data/examples/11.json",
@@ -228,7 +256,9 @@
     {
       "id": 12,
       "title": "音乐流媒体收入分配",
+      "titleEn": "Music streaming revenue distribution",
       "chartType": "条形图",
+      "chartTypeEn": "Bar chart",
       "category": "comparison",
       "image": "./images/gallery/12.png",
       "dataFile": "./data/examples/12.json",
@@ -244,7 +274,9 @@
     {
       "id": 13,
       "title": "各国军费支出占比",
+      "titleEn": "Military spending share by country",
       "chartType": "条形图",
+      "chartTypeEn": "Bar chart",
       "category": "comparison",
       "image": "./images/gallery/13.png",
       "dataFile": "./data/examples/13.json",
@@ -260,7 +292,9 @@
     {
       "id": 15,
       "title": "城市旅行成本与人口",
+      "titleEn": "City travel costs and population",
       "chartType": "双指标条形图",
+      "chartTypeEn": "Dual-measure bar chart",
       "category": "comparison",
       "image": "./images/gallery/15.png",
       "dataFile": "./data/examples/15.json",
@@ -276,7 +310,9 @@
     {
       "id": 16,
       "title": "电动汽车普及趋势",
+      "titleEn": "Electric vehicle adoption trend",
       "chartType": "堆叠柱状图",
+      "chartTypeEn": "Stacked column chart",
       "category": "trend",
       "image": "./images/gallery/16.png",
       "dataFile": "./data/examples/16.json",
@@ -292,7 +328,9 @@
     {
       "id": 17,
       "title": "AI 文本工具市场份额",
+      "titleEn": "AI text tool market share",
       "chartType": "柱状图",
+      "chartTypeEn": "Column chart",
       "category": "comparison",
       "image": "./images/gallery/17.png",
       "dataFile": "./data/examples/17.json",
@@ -308,7 +346,9 @@
     {
       "id": 18,
       "title": "消费价格指数变化",
+      "titleEn": "Consumer price index change",
       "chartType": "面积图",
+      "chartTypeEn": "Area chart",
       "category": "trend",
       "image": "./images/gallery/18.png",
       "dataFile": "./data/examples/18.json",
@@ -324,7 +364,9 @@
     {
       "id": 19,
       "title": "二战伤亡人数比较",
+      "titleEn": "World War II casualties compared",
       "chartType": "条形图",
+      "chartTypeEn": "Bar chart",
       "category": "comparison",
       "image": "./images/gallery/19.png",
       "dataFile": "./data/examples/19.json",
@@ -340,7 +382,9 @@
     {
       "id": 20,
       "title": "城市纺织废弃物回收",
+      "titleEn": "Urban textile waste recycling",
       "chartType": "棒棒糖图",
+      "chartTypeEn": "Lollipop chart",
       "category": "comparison",
       "image": "./images/gallery/20.png",
       "dataFile": "./data/examples/20.json",
@@ -356,7 +400,9 @@
     {
       "id": 21,
       "title": "深空网络传输速率",
+      "titleEn": "Deep Space Network data rates",
       "chartType": "堆叠柱状图",
+      "chartTypeEn": "Stacked column chart",
       "category": "trend",
       "image": "./images/gallery/21.png",
       "dataFile": "./data/examples/21.json",
@@ -372,7 +418,9 @@
     {
       "id": 22,
       "title": "艺术专业入学人数",
+      "titleEn": "Arts program enrollment",
       "chartType": "条形图",
+      "chartTypeEn": "Bar chart",
       "category": "comparison",
       "image": "./images/gallery/22.png",
       "dataFile": "./data/examples/22.json",
