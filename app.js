@@ -36,14 +36,14 @@ const snapshotDateFormat = new Intl.DateTimeFormat('zh-CN', {
   year: 'numeric', month: '2-digit', day: '2-digit',
   hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
 });
-const repoNames = ['ChartGalaxy', 'DAD', 'InfoDet', 'InfoChartQA'];
-const colors = ['#517848', '#c4aa66', '#799abb', '#ae94b5'];
+const repoNames = ['ChartGalaxy', 'ChartGalaxy++', 'DAD', 'InfoDet', 'InfoChartQA'];
+const colors = ['#517848', '#3c8c78', '#c4aa66', '#799abb', '#ae94b5'];
 function renderStats() {
   if (!snapshot) return;
   const total = totalDownloads(snapshot, period);
   const maximum = Math.max(...snapshot.repositories.map(r => r[period]), 1);
   document.querySelector('#download-total').innerHTML = `${format(total)}<span>次</span>`;
-  document.querySelector('#total-label').textContent = '4 个仓库 · 历史累计下载';
+  document.querySelector('#total-label').textContent = '5 个仓库 · 历史累计下载';
   document.querySelector('#download-rows').innerHTML = repositoryIds.map((id, i) => {
     const row = snapshot.repositories.find(r => r.id === id);
     return `<div class="download-row" style="--bar-color:${colors[i]}"><div class="download-row-heading"><a href="https://huggingface.co/datasets/${id}" target="_blank" rel="noopener noreferrer"><span class="repo-dot"></span>${repoNames[i]}</a><strong>${format(row[period])}</strong></div><div class="download-bar" aria-hidden="true"><span style="width:${row[period] / maximum * 100}%"></span></div></div>`;
@@ -60,7 +60,7 @@ document.querySelector('#refresh-stats').addEventListener('click', async event =
   const button = event.currentTarget;
   button.disabled = true;
   const status = document.querySelector('#stats-status');
-  status.textContent = '正在查询 4 个官方仓库的最新统计…';
+  status.textContent = '正在查询 5 个官方仓库的最新统计…';
   try {
     const repositories = await Promise.all(repositoryIds.map(async id => {
       const response = await fetch(`https://huggingface.co/api/datasets/${id}?expand[]=downloads&expand[]=downloadsAllTime`, { signal: AbortSignal.timeout(15000) });
@@ -70,7 +70,7 @@ document.querySelector('#refresh-stats').addEventListener('click', async event =
     }));
     snapshot = validateSnapshot({ fetchedAt: new Date().toISOString(), repositories });
     renderStats();
-    status.textContent = '已同步 4 个仓库。合计为仓库下载次数，不代表去重用户数。';
+    status.textContent = '已同步 5 个仓库。合计为仓库下载次数，不代表去重用户数。';
   } catch { status.textContent = snapshot ? '暂时无法连接 Hugging Face，已保留上方标注时间的完整快照，请稍后重试。' : '暂时无法连接 Hugging Face，请稍后重试或访问官方仓库。'; }
   finally { button.disabled = false; }
 });
@@ -211,7 +211,7 @@ const citations = await fetch('./data/citations.json').then(r => { if (!r.ok) th
 document.querySelectorAll('[data-cite]').forEach(button => button.addEventListener('click', () => {
   if (!citations) { window.open(button.closest('.paper').querySelector('h4 a').href, '_blank', 'noopener'); return; }
   const key = button.dataset.cite;
-  document.querySelector('#citation-title').textContent = `${({ galaxy: 'ChartGalaxy', det: 'InfoDet', qa: 'InfoChartQA' })[key]} · BibTeX`;
+  document.querySelector('#citation-title').textContent = `${({ galaxy: 'ChartGalaxy', galaxypp: 'ChartGalaxy++', det: 'InfoDet', qa: 'InfoChartQA' })[key]} · BibTeX`;
   document.querySelector('#citation-text').textContent = citations[key];
   document.querySelector('#copy-status').textContent = '';
   document.querySelector('#citation-dialog').showModal();

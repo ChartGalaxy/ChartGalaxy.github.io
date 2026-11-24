@@ -1,4 +1,4 @@
-export const repositoryIds = ['ChartGalaxy/ChartGalaxy', 'dad887/DAD', 'InfoDet/InfoDet', 'Jietson/InfoChartQA'];
+export const repositoryIds = ['ChartGalaxy/ChartGalaxy', 'ChartGalaxyPP/ChartGalaxyPlusPlus', 'dad887/DAD', 'InfoDet/InfoDet', 'Jietson/InfoChartQA'];
 export function validateSnapshot(snapshot) {
   if (!snapshot || !Number.isFinite(Date.parse(snapshot.fetchedAt)) || !Array.isArray(snapshot.repositories)) throw new Error('Invalid snapshot');
   if (snapshot.repositories.length !== repositoryIds.length) throw new Error('Incomplete repository set');

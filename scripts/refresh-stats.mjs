@@ -32,5 +32,5 @@ export async function refreshSnapshot(output, { fetchImpl = fetch, sleep = wait 
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const snapshot = await refreshSnapshot(process.argv[2] || 'public/data/downloads.json');
-  console.log('Updated all four repositories atomically:', snapshot.fetchedAt);
+  console.log(`Updated all ${snapshot.repositories.length} repositories atomically:`, snapshot.fetchedAt);
 }

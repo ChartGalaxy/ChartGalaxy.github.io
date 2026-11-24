@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: '24'
           package-manager-cache: false
-      - name: Fetch and validate all four datasets
+      - name: Fetch and validate all five datasets
         run: node scripts/refresh-stats.mjs data/downloads.json
       - name: Commit the complete snapshot
         run: |

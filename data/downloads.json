@@ -1,11 +1,16 @@
 {
-  "fetchedAt": "2026-11-24T06:36:27.713Z",
+  "fetchedAt": "2026-11-24T07:24:55.494Z",
   "source": "Hugging Face public API",
   "repositories": [
     {
       "id": "ChartGalaxy/ChartGalaxy",
       "downloads": 18385,
       "downloadsAllTime": 247135
+    },
+    {
+      "id": "ChartGalaxyPP/ChartGalaxyPlusPlus",
+      "downloads": 6473,
+      "downloadsAllTime": 8713
     },
     {
       "id": "dad887/DAD",
